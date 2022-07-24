@@ -55,10 +55,10 @@
     "windows": [
       {
         "fullscreen": false,
-        "height": 600,
-        "resizable": true,
+        "height": 792,
+        "resizable": false,
         "title": "Pizza Legends",
-        "width": 800
+        "width": 1408
       }
     ]
   }
