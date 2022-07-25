@@ -56,9 +56,11 @@
       {
         "fullscreen": false,
         "height": 792,
-        "resizable": false,
+        "resizable": true,
         "title": "Pizza Legends",
-        "width": 1408
+        "width": 1408,
+        "minWidth": 1280,
+        "minHeight": 720
       }
     ]
   }
