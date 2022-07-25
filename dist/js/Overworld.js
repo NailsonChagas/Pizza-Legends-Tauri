@@ -10,16 +10,23 @@ class Overworld {
         const step = () => {
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height); //limpando o frame anterior
 
-            this.map.drawLowerImage(this.ctx); //desenha a parte de baixo do mapa
+            //define com quem esta a camera (centro da tela)
+            const cameraPerson = this.map.gameObjects.hero;
 
-            Object.values(this.map.gameObjects).forEach(object => { //desenha todos os objetos e personagens do mapa
+            //atualiza dos objetos
+            Object.values(this.map.gameObjects).forEach(object => {
                 object.update({
                     arrow: this.directionInput.direction,
                 });
-                object.sprite.draw(this.ctx);
             });
 
-            this.map.drawUpperImage(this.ctx);//desenha a parte de cima do mapa
+            this.map.drawLowerImage(this.ctx, cameraPerson); //desenha a parte de baixo do mapa
+
+            Object.values(this.map.gameObjects).forEach(object => { //desenha todos os objetos e personagens do mapa
+                object.sprite.draw(this.ctx, cameraPerson);
+            });
+
+            this.map.drawUpperImage(this.ctx, cameraPerson);//desenha a parte de cima do mapa
 
             requestAnimationFrame(() => {
                 step(); //roda a cada novo frame
