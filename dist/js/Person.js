@@ -6,39 +6,61 @@ class Person extends GameObject {
         this.isPlayerControlled = config.isPlayerControlled || false;
 
         this.directionUpdate = {
-            'up':  ['y', -1],
-            'down':  ['y', 1],
-            'left':  ['x', -1],
-            'right':  ['x', 1]
+            'up': ['y', -1],
+            'down': ['y', 1],
+            'left': ['x', -1],
+            'right': ['x', 1]
         }
     }
 
     update(state) {
-        this.updatePosition();
-        this.updateSprit(state);
+        if (this.movingProgressRemaining > 0) {
+            this.updatePosition();
+        } else {
+            if (this.isPlayerControlled && state.arrow) {
+                this.startBehavior(state, {
+                    type: 'walk',
+                    direction: state.arrow
+                })
+            }
+            this.updateSprite();
+        }
+    }
 
-        if(this.isPlayerControlled && this.movingProgressRemaining === 0 && state.arrow) {
-            this.direction = state.arrow;
-            this.movingProgressRemaining = 16;
+    startBehavior(state, behavior) {
+        this.direction = behavior.direction;
+
+        //More cases for starting to walk will come here
+        //
+        //
+
+        //Case: We're keyboard ready and have an arrow pressed
+        switch (behavior.type) {
+            case 'walk':
+                if (state.map.isSpaceTaken(this.x, this.y, this.direction)) {
+                    return; //impedir movimento
+                }
+                //andando
+                state.map.moveWall(this.x, this.y, this.direction);
+                this.movingProgressRemaining = 16;
+                break;
+
+            default:
+                break;
         }
     }
 
     updatePosition() {
-        if(this.movingProgressRemaining > 0) {
-            const [property, change] = this.directionUpdate[this.direction];
-            this[property] += change;
-            this.movingProgressRemaining -= 1;
-        }
+        const [property, change] = this.directionUpdate[this.direction];
+        this[property] += change;
+        this.movingProgressRemaining -= 1;
     }
 
-    updateSprit(state) {
-        if(this.isPlayerControlled && this.movingProgressRemaining === 0 && !state.arrow){
-            this.sprite.setAnimation(`idle-${this.direction}`);
+    updateSprite() {
+        if (this.movingProgressRemaining > 0) {
+            this.sprite.setAnimation(`walk-${this.direction}`);
             return;
         }
-
-        if(this.movingProgressRemaining > 0){
-            this.sprite.setAnimation(`walk-${this.direction}`);
-        }
+        this.sprite.setAnimation(`idle-${this.direction}`);
     }
 }
